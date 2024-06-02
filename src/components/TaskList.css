@@ -8,6 +8,10 @@
     justify-content: flex-start;
 }
 
+.task:hover {
+    background-color: rgba(99, 97, 97, 0.94);
+}
+
 .task-list-title {
     font-size: 1.5em;
     margin-top: 0;

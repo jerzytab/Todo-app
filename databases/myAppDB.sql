@@ -1,5 +1,3 @@
-CREATE DATABASE myAppDB;
-
 USE myAppDB;
 
 CREATE TABLE Users (

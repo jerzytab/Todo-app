@@ -5,9 +5,31 @@ const Login = ({ onLogin, onRegisterClick }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onLogin({ email, password });
+        try {
+            const response = await fetch('http://localhost/backend/login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                onLogin(data.userID);
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            alert('Failed to login');
+        }
     };
 
     return (

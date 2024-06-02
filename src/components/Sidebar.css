@@ -14,3 +14,24 @@
     border-radius: 50%;
     margin-bottom: 20px;
 }
+
+.logout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #444;
+    margin-top: auto;
+    cursor: pointer;
+    background-color: #2a2a2a;
+    color: #fff;
+    border-radius: 25%;
+}
+
+.logout:hover {
+    background-color: rgba(99, 97, 97, 0.94);
+}
+
+.logout i {
+    margin-left: 10px;
+}
