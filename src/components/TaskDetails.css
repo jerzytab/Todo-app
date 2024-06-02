@@ -1,0 +1,36 @@
+.task-details {
+    width: 300px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-title {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #3a3a3a;
+    color: white;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.task-content {
+    background: none;
+    border: 1px solid #3a3a3a;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    flex: 1;
+    resize: none;
+}
+
+.delete-task {
+    background: none;
+    border: 1px solid #3a3a3a;
+    color: #ff4d4d;
+    padding: 10px;
+    cursor: pointer;
+}

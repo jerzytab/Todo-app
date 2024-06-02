@@ -1,24 +1,41 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import Sidebar from './components/Sidebar';
+import TaskList from './components/TaskList';
+import TaskDetails from './components/TaskDetails';
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
+
+  const handleLogin = (credentials) => {
+    // Tutaj można dodać logikę logowania
+    console.log('Logging in with', credentials);
+    setIsAuthenticated(true);
+  };
+
+  const handleRegister = (details) => {
+    // Tutaj można dodać logikę rejestracji
+    console.log('Registering with', details);
+    setIsAuthenticated(true);
+  };
+
+  if (!isAuthenticated) {
+    return showLogin ? (
+        <Login onLogin={handleLogin} onRegisterClick={() => setShowLogin(false)} />
+    ) : (
+        <Register onRegister={handleRegister} onLoginClick={() => setShowLogin(true)} />
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="app">
+        <Sidebar />
+        <TaskList />
+        <TaskDetails />
+      </div>
   );
 }
 
