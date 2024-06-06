@@ -1,3 +1,16 @@
+.task-list-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.task-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
 .task-list {
     flex: 1;
     padding: 20px;
@@ -5,7 +18,23 @@
     color: white;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
     justify-content: flex-start;
+}
+
+.add-task-container {
+    padding: 20px;
+    background-color: #1e1e1e;
+}
+
+.add-task {
+    background: none;
+    border: 1px solid #3a3a3a;
+    color: #3a3a3a;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
 }
 
 .task:hover {
@@ -26,6 +55,7 @@
     border: 1px solid #444;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
 }
 
 .task input[type="checkbox"] {
@@ -37,13 +67,26 @@
     color: #fff;
 }
 
-.add-task {
+.task-details-container {
+    width: 300px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #444;
+    position: relative;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.close-task-details {
+    align-self: flex-end;
     background: none;
-    border: 1px solid #3a3a3a;
-    color: #3a3a3a;
-    padding: 10px;
+    border: none;
+    color: white;
     cursor: pointer;
-    width: 100%;
-    margin-top: auto;
-    border-radius: 5px;
+    font-size: 1.5em;
 }

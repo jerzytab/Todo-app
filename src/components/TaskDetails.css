@@ -1,10 +1,37 @@
-.task-details {
-    width: 300px;
+.task-details-container {
+    width: 350px; /* Poszerzamy panel */
     padding: 20px;
     background-color: #1e1e1e;
     color: white;
     display: flex;
     flex-direction: column;
+    border-left: 1px solid #444;
+    position: relative;
+    right: 0;
+    top: 0;
+    overflow-y: auto; /* Usuwamy height i przewijanie na całość strony */
+}
+
+.task-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.close-task-details {
+    align-self: flex-end;
+    background: none;
+    border: 1px solid #444;
+    color: white;
+    cursor: pointer;
+    font-size: 1.5em;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 .task-title {
@@ -15,6 +42,7 @@
     font-size: 1.5em;
     margin-bottom: 10px;
     padding: 10px;
+    width: 100%; /* Dopasowujemy elementy pod szerokość */
 }
 
 .task-content {
@@ -25,6 +53,7 @@
     margin-bottom: 10px;
     flex: 1;
     resize: none;
+    width: 100%; /* Dopasowujemy elementy pod szerokość */
 }
 
 .delete-task {
@@ -33,4 +62,7 @@
     color: #ff4d4d;
     padding: 10px;
     cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+    margin-top: auto; /* Umieszczamy przycisk na dole */
 }
