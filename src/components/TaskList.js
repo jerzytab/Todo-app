@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './TaskList.css';
 import TaskDetails from './TaskDetails';
 
@@ -6,9 +6,57 @@ const TaskList = () => {
     const [tasks, setTasks] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
 
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
+    const checkAuth = async () => {
+        try {
+            const response = await fetch('http://localhost/backend/authenticate.php', {
+                method: 'GET',
+                credentials: 'include', // Include cookies in the request
+            });
+            const data = await response.json();
+            if (data.status !== 'authenticated') {
+                alert('User not authenticated');
+                // Redirect to login page or handle unauthenticated state
+            }
+        } catch (error) {
+            console.error('Authentication check failed', error);
+        }
+    };
+
+    const saveTaskToDB = async (task) => {
+        try {
+            const response = await fetch('http://localhost/backend/saveTask.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include', // Include cookies in the request
+                body: JSON.stringify(task),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                console.log('Task saved with ID:', data.taskID);
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            alert('Failed to save task');
+        }
+    };
+
     const addTask = () => {
-        const newTask = { label: 'Create a Tutorial on Microsoft To Do', content: '' };
+        const newTask = { title: 'Create a Tutorial on Microsoft To Do', description: '' };
         setTasks([newTask, ...tasks]);
+        saveTaskToDB(newTask);
     };
 
     const selectTask = (task) => {
@@ -39,7 +87,7 @@ const TaskList = () => {
                     {tasks.map((task, index) => (
                         <div className="task" key={index} onClick={() => selectTask(task)}>
                             <input type="checkbox"/>
-                            <label>{task.label}</label>
+                            <label>{task.title}</label>
                         </div>
                     ))}
                 </div>

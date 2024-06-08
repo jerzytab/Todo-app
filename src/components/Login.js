@@ -13,6 +13,7 @@ const Login = ({ onLogin, onRegisterClick }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include', // Aby wysyłać ciasteczka sesji
                 body: JSON.stringify({ email, password }),
             });
 

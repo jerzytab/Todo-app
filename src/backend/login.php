@@ -1,8 +1,10 @@
 <?php
+session_start();
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Credentials: true');
 
 include 'config.php';
 
@@ -26,6 +28,8 @@ if ($query->num_rows == 1) {
     $query->fetch();
 
     if (password_verify($password, $hashedPassword)) {
+        $_SESSION['userID'] = $userID;
+        $_SESSION['lastActivity'] = time();
         echo json_encode(['status' => 'success', 'userID' => $userID]);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Invalid password']);
@@ -33,4 +37,7 @@ if ($query->num_rows == 1) {
 } else {
     echo json_encode(['status' => 'error', 'message' => 'User not found']);
 }
+
+$query->close();
+$conn->close();
 ?>
