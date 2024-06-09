@@ -13,8 +13,9 @@ if (!isset($_SESSION['userID'])) {
     exit();
 }
 
-$taskID = $_POST['ID'];
-$status = $_POST['Status'];
+$data = json_decode(file_get_contents('php://input'), true);
+$taskID = $data['ID'];
+$status = $data['Status'];
 
 $query = $conn->prepare("UPDATE Tasks SET Status = ? WHERE ID = ?");
 $query->bind_param("si", $status, $taskID);

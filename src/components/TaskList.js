@@ -125,6 +125,35 @@ const TaskList = () => {
         }
     };
 
+    const handleStatusChange = async (task) => {
+        const updatedStatus = task.status === 'DONE' ? 'TO_DO' : 'DONE';
+        const updatedTask = { ...task, status: updatedStatus };
+
+        try {
+            const response = await fetch('http://localhost/backend/updateTaskStatus.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ ID: task.ID, Status: updatedStatus }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                setTasks(tasks.map(t => (t.ID === task.ID ? updatedTask : t)));
+            } else {
+                console.error(data.message);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
+    };
+
     return (
         <div className="task-list-container">
             <div className="task-list-wrapper">
@@ -135,7 +164,11 @@ const TaskList = () => {
                             key={task.ID}
                             onClick={() => selectTask(task)}
                         >
-                            <input type="checkbox" checked={task.status === 'DONE'} readOnly />
+                            <input
+                                type="checkbox"
+                                checked={task.status === 'DONE'}
+                                onChange={() => handleStatusChange(task)}
+                            />
                             <label>{task.title}</label>
                         </div>
                     ))}
