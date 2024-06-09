@@ -8,6 +8,8 @@ const TaskDetails = ({ task, onUpdate, onDelete, onClose }) => {
         setEditedTask({ ...task });
     }, [task]);
 
+    const hasChanges = JSON.stringify(task) !== JSON.stringify(editedTask);
+
     const handleUpdateTitle = (e) => {
         setEditedTask({ ...editedTask, title: e.target.value });
     };
@@ -22,12 +24,19 @@ const TaskDetails = ({ task, onUpdate, onDelete, onClose }) => {
             return;
         }
 
+        console.log('Sending updated task:', {
+            id: editedTask.id,
+            title: editedTask.title,
+            content: editedTask.content,
+        });
+
         try {
             const response = await fetch('http://localhost/backend/updateTask.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     id: editedTask.id,
                     title: editedTask.title,
@@ -35,15 +44,24 @@ const TaskDetails = ({ task, onUpdate, onDelete, onClose }) => {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            console.log('Response status:', response.status);
 
-            onUpdate(editedTask);
-            onClose();
+            if (response.ok) {
+                const data = await response.json();
+                if (data.status === 'success') {
+                    onUpdate(editedTask);
+                    onClose();
+                    window.location.reload(); // Odśwież stronę po zapisie
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                console.error('Network response was not ok');
+                alert('Network response was not ok');
+            }
         } catch (error) {
             console.error('Fetch error:', error);
-            alert('Failed to update task');
+            alert('Fetch error: ' + error.message);
         }
     };
 
@@ -67,9 +85,11 @@ const TaskDetails = ({ task, onUpdate, onDelete, onClose }) => {
                 onChange={handleUpdateContent}
                 placeholder="Task details..."
             />
-            <button className="save-task" onClick={handleSave}>
-                <i className="fas fa-save"></i> Save
-            </button>
+            {hasChanges && (
+                <button className="save-task" onClick={handleSave}>
+                    <i className="fas fa-save"></i> Save
+                </button>
+            )}
             <button className="delete-task" onClick={() => onDelete(task)}>
                 <i className="fas fa-trash"></i> Delete
             </button>

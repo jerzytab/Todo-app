@@ -23,13 +23,16 @@ const TaskList = () => {
 
             const data = await response.json();
             if (data.status === 'success') {
-                setTasks(data.tasks);
+                const tasksWithMappedFields = data.tasks.map(task => ({
+                    ...task,
+                    content: task.description // Map description to content
+                }));
+                setTasks(tasksWithMappedFields);
             } else {
-                alert(data.message);
+                console.error(data.message);
             }
         } catch (error) {
             console.error('Fetch error:', error);
-            alert('Failed to fetch tasks');
         }
     };
 
@@ -53,11 +56,10 @@ const TaskList = () => {
             if (data.status === 'success') {
                 fetchTasks();
             } else {
-                alert(data.message);
+                console.error(data.message);
             }
         } catch (error) {
             console.error('Fetch error:', error);
-            alert('Failed to save task');
         }
     };
 
@@ -89,11 +91,10 @@ const TaskList = () => {
             if (data.status === 'success') {
                 fetchTasks();
             } else {
-                alert(data.message);
+                console.error(data.message);
             }
         } catch (error) {
             console.error('Fetch error:', error);
-            alert('Failed to update task');
         }
     };
 
@@ -117,11 +118,10 @@ const TaskList = () => {
                 setTasks(tasks.filter(task => task.ID !== taskToDelete.ID));
                 setSelectedTask(null);
             } else {
-                alert(data.message);
+                console.error(data.message);
             }
         } catch (error) {
             console.error('Fetch error:', error);
-            alert('Failed to delete task');
         }
     };
 
