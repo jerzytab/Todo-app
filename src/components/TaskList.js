@@ -179,17 +179,27 @@ const TaskList = () => {
 
         if (filters.creationDate) {
             filtered = filtered.filter(task => {
-                const taskCreationDate = new Date(task.creationDate).toISOString().split('T')[0];
+                if (!task.creationDate) {
+                    return false; // Ignoruj zadania bez daty tworzenia
+                }
+                const taskCreationDate = new Date(task.creationDate).toLocaleDateString();
+                console.log('Task creation date:', taskCreationDate);
                 return taskCreationDate === filters.creationDate;
             });
         }
 
         if (filters.dueDate) {
             filtered = filtered.filter(task => {
-                const taskDueDate = new Date(task.dueDate).toISOString().split('T')[0];
+                if (!task.dueDate) {
+                    return false; // Ignoruj zadania bez daty końcowej
+                }
+                const taskDueDate = new Date(task.dueDate).toLocaleDateString();
+                console.log('Task due date:', taskDueDate);
                 return taskDueDate === filters.dueDate;
             });
         }
+
+        console.log('Filtered tasks:', filtered); // Dodaj ten wiersz
 
         setFilteredTasks(filtered);
     };

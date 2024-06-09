@@ -39,7 +39,7 @@ const FilterModal = ({ filters, onClose, onApply }) => {
                         type="date"
                         name="dueDate"
                         value={localFilters.dueDate}
-                        onChange={handleChange}
+                        onChange={handleChange} disabled={true}
                     />
                 </div>
                 <div className="filter-modal-footer">
