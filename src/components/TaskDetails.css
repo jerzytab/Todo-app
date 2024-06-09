@@ -1,5 +1,6 @@
 .task-details-container {
     width: 350px; /* Poszerzamy panel */
+    height: 95vh;
     padding: 20px;
     background-color: #1e1e1e;
     color: white;
@@ -42,7 +43,7 @@
     font-size: 1.5em;
     margin-bottom: 10px;
     padding: 10px;
-    width: 100%; /* Dopasowujemy elementy pod szerokość */
+    width: 95%; /* Dopasowujemy elementy pod szerokość */
 }
 
 .task-content {
@@ -53,7 +54,7 @@
     margin-bottom: 10px;
     flex: 1;
     resize: none;
-    width: 100%; /* Dopasowujemy elementy pod szerokość */
+    width: 95%; /* Dopasowujemy elementy pod szerokość */
 }
 
 .delete-task {

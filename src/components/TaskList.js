@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './TaskList.css';
 import TaskDetails from './TaskDetails';
+import FilterModal from './FilterModal';
 
 const TaskList = () => {
     const [tasks, setTasks] = useState([]);
+    const [filteredTasks, setFilteredTasks] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const [filters, setFilters] = useState({ status: 'ALL', creationDate: '', dueDate: '' });
 
     useEffect(() => {
         fetchTasks();
     }, []);
+
+    useEffect(() => {
+        applyFilters();
+    }, [filters, tasks]);
 
     const fetchTasks = async () => {
         try {
@@ -154,11 +162,43 @@ const TaskList = () => {
         }
     };
 
+    const openFilterModal = () => {
+        setIsFilterModalOpen(true);
+    };
+
+    const closeFilterModal = () => {
+        setIsFilterModalOpen(false);
+    };
+
+    const applyFilters = () => {
+        let filtered = tasks;
+
+        if (filters.status !== 'ALL') {
+            filtered = filtered.filter(task => task.status === filters.status);
+        }
+
+        if (filters.creationDate) {
+            filtered = filtered.filter(task => {
+                const taskCreationDate = new Date(task.creationDate).toISOString().split('T')[0];
+                return taskCreationDate === filters.creationDate;
+            });
+        }
+
+        if (filters.dueDate) {
+            filtered = filtered.filter(task => {
+                const taskDueDate = new Date(task.dueDate).toISOString().split('T')[0];
+                return taskDueDate === filters.dueDate;
+            });
+        }
+
+        setFilteredTasks(filtered);
+    };
+
     return (
         <div className="task-list-container">
             <div className="task-list-wrapper">
                 <div className="task-list">
-                    {tasks.map((task) => (
+                    {filteredTasks.map((task) => (
                         <div
                             className={`task ${selectedTask && selectedTask.ID === task.ID ? 'selected' : ''}`}
                             key={task.ID}
@@ -173,9 +213,12 @@ const TaskList = () => {
                         </div>
                     ))}
                 </div>
-                <div className="add-task-container">
+                <div className="task-list-header">
                     <button className="add-task" onClick={addTask}>
                         <i className="fas fa-plus"></i> Add a Task
+                    </button>
+                    <button className="filter-tasks" onClick={openFilterModal}>
+                        <i className="fas fa-filter"></i> Filter Tasks
                     </button>
                 </div>
             </div>
@@ -188,6 +231,13 @@ const TaskList = () => {
                         onClose={closeTaskDetails}
                     />
                 </div>
+            )}
+            {isFilterModalOpen && (
+                <FilterModal
+                    filters={filters}
+                    onClose={closeFilterModal}
+                    onApply={setFilters}
+                />
             )}
         </div>
     );
