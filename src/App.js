@@ -5,36 +5,44 @@ import TaskList from './components/TaskList';
 import TaskDetails from './components/TaskDetails';
 import Login from './components/Login';
 import Register from './components/Register';
-import checkAuth from './checkAuth';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
 
   useEffect(() => {
-    const authenticate = async () => {
-      try {
-        const authData = await checkAuth();
-        if (authData.status === 'authenticated') {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error('Authentication check failed:', error);
-      }
-    };
-
-    authenticate();
+    checkAuth();
   }, []);
 
-  const handleLogin = (userID) => {
-    console.log('Logged in with userID:', userID);
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('http://localhost/backend/authenticate.php', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      if (data.status === 'authenticated') {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error('Authentication check failed', error);
+    }
+  };
+
+  const handleLogin = (credentials) => {
+    console.log('Logging in with', credentials);
     setIsAuthenticated(true);
   };
 
   const handleRegister = (details) => {
-    console.log('Registered with details:', details);
+    console.log('Registering with', details);
     setIsAuthenticated(true);
   };
 

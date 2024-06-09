@@ -9,11 +9,13 @@ const Sidebar = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
             });
             const data = await response.json();
             if (data.status === 'success') {
-                // Tutaj możesz dodać odpowiednie działania po wylogowaniu, np. przekierowanie do strony logowania
                 console.log('Logged out successfully');
+                // Odśwież stronę po wylogowaniu
+                window.location.reload();
             } else {
                 console.error('Logout failed');
             }

@@ -7,34 +7,14 @@ const TaskList = () => {
     const [selectedTask, setSelectedTask] = useState(null);
 
     useEffect(() => {
-        checkAuth();
+        fetchTasks();
     }, []);
 
-    const checkAuth = async () => {
+    const fetchTasks = async () => {
         try {
-            const response = await fetch('http://localhost/backend/authenticate.php', {
+            const response = await fetch('http://localhost/backend/getTasks.php', {
                 method: 'GET',
-                credentials: 'include', // Include cookies in the request
-            });
-            const data = await response.json();
-            if (data.status !== 'authenticated') {
-                alert('User not authenticated');
-                // Redirect to login page or handle unauthenticated state
-            }
-        } catch (error) {
-            console.error('Authentication check failed', error);
-        }
-    };
-
-    const saveTaskToDB = async (task) => {
-        try {
-            const response = await fetch('http://localhost/backend/saveTask.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', // Include cookies in the request
-                body: JSON.stringify(task),
+                credentials: 'include',
             });
 
             if (!response.ok) {
@@ -43,7 +23,35 @@ const TaskList = () => {
 
             const data = await response.json();
             if (data.status === 'success') {
-                console.log('Task saved with ID:', data.taskID);
+                setTasks(data.tasks);
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            alert('Failed to fetch tasks');
+        }
+    };
+
+    const addTask = async () => {
+        const newTask = { title: 'New Task', description: '', status: 'TO_DO' };
+        try {
+            const response = await fetch('http://localhost/backend/saveTask.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(newTask),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                fetchTasks();
             } else {
                 alert(data.message);
             }
@@ -53,40 +61,81 @@ const TaskList = () => {
         }
     };
 
-    const addTask = () => {
-        const newTask = { title: 'Create a Tutorial on Microsoft To Do', description: '' };
-        setTasks([newTask, ...tasks]);
-        saveTaskToDB(newTask);
-    };
-
     const selectTask = (task) => {
-        setSelectedTask(task);
+        const selectedTaskWithId = { ...task, id: task.ID };
+        setSelectedTask(selectedTaskWithId);
     };
 
     const closeTaskDetails = () => {
         setSelectedTask(null);
     };
 
-    const handleUpdateTask = (updatedTask) => {
-        const updatedTasks = tasks.map((task) =>
-            task === selectedTask ? updatedTask : task
-        );
-        setTasks(updatedTasks);
+    const handleUpdateTask = async (updatedTask) => {
+        try {
+            const response = await fetch('http://localhost/backend/updateTask.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(updatedTask),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                fetchTasks();
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            alert('Failed to update task');
+        }
     };
 
-    const handleDeleteTask = (taskToDelete) => {
-        const updatedTasks = tasks.filter((task) => task !== taskToDelete);
-        setTasks(updatedTasks);
-        setSelectedTask(null); // Jeśli usuwamy aktualnie wybrany task, wybierzemy null
+    const handleDeleteTask = async (taskToDelete) => {
+        try {
+            const response = await fetch('http://localhost/backend/deleteTask.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ id: taskToDelete.ID }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                setTasks(tasks.filter(task => task.ID !== taskToDelete.ID));
+                setSelectedTask(null);
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            alert('Failed to delete task');
+        }
     };
 
     return (
         <div className="task-list-container">
             <div className="task-list-wrapper">
                 <div className="task-list">
-                    {tasks.map((task, index) => (
-                        <div className="task" key={index} onClick={() => selectTask(task)}>
-                            <input type="checkbox"/>
+                    {tasks.map((task) => (
+                        <div
+                            className={`task ${selectedTask && selectedTask.ID === task.ID ? 'selected' : ''}`}
+                            key={task.ID}
+                            onClick={() => selectTask(task)}
+                        >
+                            <input type="checkbox" checked={task.status === 'DONE'} readOnly />
                             <label>{task.title}</label>
                         </div>
                     ))}
@@ -102,7 +151,7 @@ const TaskList = () => {
                     <TaskDetails
                         task={selectedTask}
                         onUpdate={handleUpdateTask}
-                        onDelete={handleDeleteTask} // Przekazujemy funkcję usuwania
+                        onDelete={handleDeleteTask}
                         onClose={closeTaskDetails}
                     />
                 </div>
